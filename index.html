@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para ti ❤️</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Fredoka:wght@300;400;600&display=swap"
+    rel="stylesheet">
+  <!-- Scripts GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <style>
+    :root {
+      --snoopy-white: #ffffff;
+      --snoopy-black: #1a1a1a;
+      --snoopy-red: #ff3e3e;
+      --woodstock-yellow: #fff34d;
+      --bg-color: #fff9f9;
+      --accent-blue: #70a1ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background-color: var(--bg-color);
+      background-image: radial-gradient(#e0e0e0 1.5px, transparent 1.5px);
+      background-size: 20px 20px;
+      color: var(--snoopy-black);
+      overflow-x: hidden;
+    }
+
+    .oculto {
+      display: none !important;
+    }
+
+    .texto-centro {
+      text-align: center;
+    }
+
+    /* Snoopy Deco */
+    .snoopy-deco {
+      position: absolute;
+      z-index: 2;
+      pointer-events: none;
+      filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.1));
+    }
+
+    /* Pantalla Inicio */
+    #pantalla-inicio {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #fff;
+      position: relative;
+      z-index: 50;
+    }
+
+    .sobre-wrapper {
+      position: relative;
+      width: 300px;
+      height: 200px;
+      cursor: pointer;
+      perspective: 1000px;
+    }
+
+    .sobre {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: var(--snoopy-red);
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .sobre::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 150px solid transparent;
+      border-right: 150px solid transparent;
+      border-bottom: 100px solid #d63031;
+      border-radius: 0 0 10px 10px;
+    }
+
+    .solapa-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 150px solid transparent;
+      border-right: 150px solid transparent;
+      border-top: 110px solid var(--snoopy-red);
+      transform-origin: top;
+      transition: transform 0.6s 0.2s, z-index 0.2s;
+      z-index: 10;
+    }
+
+    .solapa-top.abierta {
+      transform: rotateX(180deg);
+      z-index: 0;
+    }
+
+    .carta-interior {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      width: 260px;
+      height: 180px;
+      background: white;
+      border-radius: 5px;
+      transition: transform 0.6s 0.6s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      z-index: 5;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .carta-interior img {
+      width: 90%;
+      height: auto;
+    }
+
+    .carta-interior.sacada {
+      transform: translateY(-160px) scale(1.1);
+    }
+
+    /* Contenido */
+    .contenedor {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: rgba(255, 255, 255, 0.95);
+      border-left: 10px solid var(--snoopy-black);
+      border-right: 10px solid var(--snoopy-black);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    h1 {
+      font-family: 'Patrick Hand', cursive;
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      text-shadow: 3px 3px 0px var(--woodstock-yellow);
+    }
+
+    h2 {
+      font-family: 'Patrick Hand', cursive;
+      font-size: 2.5rem;
+      margin-bottom: 25px;
+      color: var(--snoopy-red);
+    }
+
+    p {
+      font-size: 1.3rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      color: #444;
+    }
+
+    /* Intro */
+    .intro {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 10px 10px 0px var(--snoopy-black);
+      margin-bottom: 60px;
+      border: 4px solid var(--snoopy-black);
+      text-align: center;
+    }
+
+    .snoopy-anim-intro {
+      width: 180px;
+      margin: 0 auto 10px;
+      display: block;
+    }
+
+    /* Slideshow Hero */
+    .slideshow-hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: #fff;
+      border-radius: 20px;
+      border: 2px dashed var(--snoopy-black);
+      margin: 40px 0;
+    }
+
+    .btn-iniciar-viaje {
+      background: var(--snoopy-red);
+      color: white;
+      font-family: 'Patrick Hand', cursive;
+      font-size: 2rem;
+      padding: 15px 40px;
+      border: 3px solid var(--snoopy-black);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 5px 5px 0px var(--snoopy-black);
+      display: inline-block;
+      margin-top: 20px;
+    }
+
+    .btn-iniciar-viaje:hover {
+      transform: translate(-3px, -3px) rotate(-1deg);
+      box-shadow: 8px 8px 0px var(--snoopy-black);
+      background: var(--woodstock-yellow);
+      color: var(--snoopy-black);
+    }
+
+    /* Modal Slideshow */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 10, 10, 0.95);
+      z-index: 5000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      opacity: 0;
+      backdrop-filter: blur(10px);
+    }
+
+    .modal-contenido {
+      width: auto;
+      max-width: 95%;
+      height: 80vh;
+      /* Fijo para evitar saltos */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .modal-contenido img,
+    .modal-contenido video {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+      border: 2px solid white;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-texto {
+      color: white;
+      font-family: 'Patrick Hand', cursive;
+      font-size: 1.6rem;
+      margin-top: 15px;
+      text-align: center;
+      max-width: 800px;
+      text-shadow: 2px 2px 4px black;
+      min-height: 3rem;
+      /* Espacio reservado */
+    }
+
+    .modal-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      color: white;
+      border: none;
+      font-size: 4rem;
+      cursor: pointer;
+      padding: 20px;
+      transition: transform 0.2s, color 0.2s;
+      z-index: 5002;
+      text-shadow: 0 0 10px black;
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    .modal-nav-btn:hover {
+      color: var(--snoopy-red);
+      transform: translateY(-50%) scale(1.2);
+    }
+
+    #btn-prev {
+      left: 20px;
+    }
+
+    #btn-next {
+      right: 20px;
+    }
+
+    .cerrar-modal {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 40px;
+      cursor: pointer;
+      z-index: 5003;
+      transition: 0.3s;
+    }
+
+    .cerrar-modal:hover {
+      color: white;
+      transform: rotate(90deg);
+    }
+
+    .numero-foto {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      color: rgba(255, 255, 255, 0.7);
+      font-family: 'Patrick Hand';
+      font-size: 1.2rem;
+    }
+
+    /* Formulario */
+    .seccion-final {
+      margin-top: 50px;
+      background: var(--woodstock-yellow);
+      padding: 60px 20px;
+      border-radius: 30px;
+      border: 4px solid var(--snoopy-black);
+      box-shadow: 15px 15px 0px var(--snoopy-black);
+      text-align: center;
+    }
+
+    textarea {
+      width: 100%;
+      max-width: 600px;
+      height: 120px;
+      padding: 15px;
+      border-radius: 10px;
+      border: 3px solid black;
+    }
+
+    .btn-enviar {
+      padding: 10px 30px;
+      font-size: 1.2rem;
+      background: var(--snoopy-red);
+      color: white;
+      border: 3px solid black;
+      cursor: pointer;
+      border-radius: 30px;
+      box-shadow: 4px 4px 0px black;
+    }
+
+    /* Música Controls */
+    .reproductor-musica {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 5px 10px;
+      border-radius: 30px;
+      display: flex;
+      gap: 10px;
+      border: 2px solid black;
+      z-index: 4000;
+      font-family: 'Patrick Hand';
+    }
+
+    @media (max-width: 768px) {
+      .modal-nav-btn {
+        font-size: 2.5rem;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 50%;
+      }
+
+      #btn-prev {
+        left: 5px;
+      }
+
+      #btn-next {
+        right: 5px;
+      }
+
+      .modal-texto {
+        font-size: 1.1rem;
+        padding: 0 10px;
+        margin-top: 10px;
+      }
+
+      h1 {
+        font-size: 2.2rem;
+      }
+
+      .contenedor {
+        border-width: 0;
+        padding: 20px;
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+      }
+
+      .intro {
+        padding: 30px 15px;
+      }
+
+      .slideshow-hero {
+        padding: 40px 15px;
+        margin: 20px 0;
+      }
+
+      /* Ocultar decoraciones laterales en móvil */
+      .snoopy-deco {
+        display: none;
+      }
+
+      .reproductor-musica {
+        bottom: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        transform: scale(0.9);
+      }
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+
+      100% {
+        transform: translateY(0px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Modal Slideshow -->
+  <div id="modal" class="modal">
+    <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+    <span class="numero-foto" id="numero-foto">1 / 20</span>
+
+    <button id="btn-prev" class="modal-nav-btn" onclick="cambiarSlide(-1)">&#10094;</button>
+    <button id="btn-next" class="modal-nav-btn" onclick="cambiarSlide(1)">&#10095;</button>
+
+    <div class="modal-contenido" id="modal-contenido">
+      <!-- Media inyectada aquí -->
+    </div>
+    <p class="modal-texto" id="modal-texto">Cargando...</p>
+  </div>
+
+  <!-- Pantalla Inicio -->
+  <div id="pantalla-inicio">
+    <h2 style="font-family: 'Patrick Hand'; font-size: 2.2rem; margin-bottom: 40px; color: #555;">
+      ¡Tienes una carta nueva!
+    </h2>
+    <div class="sobre-wrapper" onclick="abrirCarta()">
+      <div class="sobre">
+        <div class="carta-interior" id="carta-interior">
+          <img src="img/snoopy_sobre.png"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block'" alt="Snoopy">
+          <div style="display:none; font-size: 60px;">💌</div>
+        </div>
+        <div class="solapa-top" id="solapa-top"></div>
+      </div>
+    </div>
+    <p style="margin-top: 40px; color: #888;">(Toca el sobre)</p>
+  </div>
+
+  <audio id="audio-player" loop>
+    <source id="audio-source" src="img/cancion1.mp3" type="audio/mp3">
+  </audio>
+
+  <!-- Contenido -->
+  <div id="contenido-principal" class="contenedor oculto">
+
+    <!-- Decoraciones -->
+    <img src="img/snoopy1.png" class="snoopy-deco"
+      style="top: 50px; left: -60px; width: 120px; transform: rotate(-10deg);" onerror="this.remove()">
+    <img src="img/snoopy_music.png" class="snoopy-deco" style="bottom: 50px; right: -40px; width: 100px;"
+      onerror="this.remove()">
+
+    <header class="texto-centro" style="margin-bottom: 40px;">
+      <h1 class="gsap-header">No es para enamorarte...</h1>
+      <h2 class="gsap-header" style="color: #666; font-size: 1.8rem;">Es para recordarte lo especial que fuiste.</h2>
+    </header>
+
+    <section class="intro gsap-fade">
+      <img src="img/snoopy5.png" class="snoopy-anim-intro" alt="Snoopy"
+        style="animation: float 3s ease-in-out infinite;">
+      <p>Hola,</p>
+      <p>Quizás te sorprenda recibir esto. Sé que cada uno ha seguido su camino, pero encontré estos recuerdos y no pude
+        evitar sonreír.</p>
+      <p>Esta carta es un pequeño homenaje a nuestra historia, porque lo bonito merece ser recordado.</p>
+
+      <p>Ten en cuenta que verás imágenes fuertes y momentos tristes. Sabes que <strong>no me ha tocado nada fácil la
+          vida</strong>, y esta carta muestra esa realidad también.</p>
+
+      <div
+        style="background: rgba(255, 235, 59, 0.2); padding: 15px; border-radius: 10px; margin: 20px 0; border: 2px dashed #f1c40f;">
+        <p style="font-size: 1.1rem; color: #555; margin-bottom: 5px;">🌻 <strong>Un pequeño detalle para ti</strong> 🌻
+        </p>
+        <p style="font-size: 1rem; margin-bottom: 0;">
+          Te regalo este <strong>collar y anillo de girasol</strong> con mucho cariño. Son para cuando sientas estrés o
+          ansiedad; gíralos, respira y recuerda que mereces estar siempre feliz y tranquila.
+        </p>
+      </div>
+
+      <div
+        style="background: rgba(112, 161, 255, 0.15); padding: 15px; border-radius: 10px; margin: 20px 0; border: 2px dashed #70a1ff;">
+        <p style="font-size: 1.1rem; color: #555; margin-bottom: 5px;">🎈 <strong>Postdata...</strong></p>
+        <p style="font-size: 1rem; margin-bottom: 0;">
+          Y solo quería recordarte que... <strong>aún no es el final de esta historia.</strong>
+        </p>
+      </div>
+
+      <h3 style="font-family: 'Patrick Hand'; font-size: 1.8rem; color: #e74c3c; margin-top: 30px;">
+        ¡Feliz día del amor y la amistad! ❤️
+      </h3>
+
+      <p>He preparado un pequeño viaje por esos momentos...</p>
+    </section>
+
+    <!-- Botón para iniciar Slideshow -->
+    <section class="slideshow-hero gsap-fade">
+      <div style="font-size: 3rem; margin-bottom: 20px;">📸</div>
+      <h2 style="font-size: 2rem; color: #333;">Nuestra Historia</h2>
+      <p>Hay 63 momentos especiales esperando.</p>
+      <button class="btn-iniciar-viaje" onclick="iniciarSlideshow()">
+        Iniciar el Viaje 🚀
+      </button>
+    </section>
+
+    <section class="seccion-final gsap-fade">
+      <img src="img/woodstock.png" style="width: 80px; margin-bottom: 20px;" onerror="this.style.display='none'">
+      <h2>¿Qué piensas?</h2>
+      <p>Si estos recuerdos te sacaron una sonrisa, ya valió la pena.</p>
+      <form action="https://formspree.io/f/mbdagawb" method="POST">
+        <textarea name="mensaje" placeholder="Escribe algo bonito aquí..." required></textarea>
+        <br>
+        <button type="submit" class="btn-enviar">Enviar Mensaje 💌</button>
+      </form>
+    </section>
+
+  </div>
+
+  <div class="reproductor-musica oculto" id="control-musica">
+    <span style="font-size: 20px; cursor: pointer;"
+      onclick="document.getElementById('audio-player').muted = !document.getElementById('audio-player').muted">🎵</span>
+  </div>
+
+  <script>
+    // DATA
+    const galeriaData = [
+      { t: "Bugs acompañándote porque tenías cólicos", i: 1, type: "img" },
+      { t: "Cuando éramos los más felices y siempre nos agarrábamos de la manito", i: 2, type: "video" },
+      { t: "Cuando me mirabas con carita de amor y felicidad porque te hacia caso", i: 3, type: "video" },
+      { t: "Cuando íbamos a comer empanada en Mosquera y se pasaba el bus de bojaca", i: 4, type: "video" },
+      { t: "Cuando nos prometimos no dejarnos y estar siempre el uno para el otro, ese dia me mordiste", i: 5, type: "img" },
+      { t: "Cuando nos veíamos en Mosquera, ese dia nos devolvimos a bojaca", i: 6, type: "video" },
+      { t: "Cuando te gustaba que te diera besitos y te ponias feliz", i: 7, type: "video" },
+      { t: "Después de comer empanada en Mosquera", i: 8, type: "video" },
+      { t: "12 de Febrero en Corzo me llovio pero logre recoger tu regalo para complementar la carta", i: 9, type: "img" },
+      { t: "Foto chistosa en el parque de Mosquera", i: 10, type: "img" },
+      { t: "Foto con bebé Bugs", i: 11, type: "img" },
+      { t: "Foto con yuana", i: 12, type: "img" },
+      { t: "Fotos con hotdog el dia que fuimos a solucionar lo de la transaccion que te hicieron mal", i: 13, type: "img" },
+      { t: "cuando estabas comprando hotdogs, siempre te tomaba fotos y cosas asi sin que te dieras cuenta", i: 14, type: "img" },
+      { t: "La primera foto registrada en mi teléfono de nuestras salidas, una de las primeras fuera del sena", i: 15, type: "img" },
+      { t: "Más del parque de Mosquera", i: 16, type: "video" },
+      { t: "Más del Centro Comercial San Jorge", i: 17, type: "video" },
+      { t: "Nacimiento de tu sobrino Tiago", i: 18, type: "img" },
+      { t: "Nuestras caras (me gustan esos videos)", i: 19, type: "video" },
+      { t: "Segunda foto más vieja (Centro Comercial San Jorge)", i: 20, type: "img" },
+      { t: "Siempre tenías ese guantecito", i: 21, type: "video" },
+      { t: "Último día del año 2025, cuando te di a (Yuana) ultimo video que nos tomamos ese año", i: 22, type: "video" },
+      { t: "En el bus para la casa (Bojacá)", i: 23, type: "img" },
+      { t: "Una foto muy de los dos", i: 24, type: "img" },
+      { t: "Cuando estabas enfermita y aun asi me lo decias siempre", i: 25, type: "video" },
+      { t: "Videos en Centro Comercial San Jorge (primeras salidas)", i: 26, type: "video" },
+      { t: "Cuando dijiste que me parecía a Liam", i: 27, type: "img" },
+      { t: "Cuando fuiste a buscarme a mi trabajo (parqueadero)", i: 28, type: "img" },
+      { t: "Cuando me mostraste tus pantuflas (me gustan, son tiernas)", i: 29, type: "img" },
+      { t: "Parezco ya señora de González eso me encanto", i: 30, type: "img" },
+      { t: "Una de las veces que te dormías viendo películas", i: 31, type: "img" },
+      { t: "Una de tantas veces que me mostrabas que comías", i: 32, type: "img" },
+      { t: "Cuando eras la más tierna", i: 33, type: "img" },
+      { t: "Cuando me enviabas videos tuyos", i: 34, type: "video" },
+      { t: "Cuando te enojabas porque nadie te ayudaba con el aseo", i: 35, type: "img" },
+      { t: "Tus ocurrencias chistosas jajaja", i: 36, type: "video" },
+      { t: "Cuando dure mas de 24 horas en el hospital de madrid esperando razon de mis hermanos, sin domir ", i: 37, type: "img" },
+      { t: "Cuando estaba arrelgando documentos de la registraduria y me encontre esto", i: 38, type: "img" },
+      { t: "Cuando estavamos viendo lo que le querias comprar a paula", i: 39, type: "img" },
+      { t: "Cuando estuvimos en el cumpleaños de paula", i: 40, type: "img" },
+      { t: "Cuando fui al portal una de tantas veces y te concentia tus piecitos ", i: 41, type: "img" },
+      { t: "Cuando fuimos a la cafeteria con pipe ", i: 42, type: "img" },
+      { t: "Cuando la  doctora me dijo que no habia mucha gente para que le ayudara y me dio esos guantes y le ayude ", i: 43, type: "img" },
+      { t: "Cuando liam estaba gordito ", i: 44, type: "img" },
+      { t: "Cuando llego el pedido de paula, tu la mas feliz ", i: 45, type: "img" },
+      { t: "Cuando me dibujaste un snoopy, mi favorito ", i: 46, type: "img" },
+      { t: "Cuando me estaba alistando para llevarte flores y que estabas ayudandole a pipe ", i: 47, type: "img" },
+      { t: "Cuando me toco sostener a miguel mientras le tomaban la radiografia de la clavicula porque se la partio ", i: 48, type: "img" },
+      { t: "Cuando me volviste a morder en el local de pipe jaja ", i: 49, type: "img" },
+      { t: "Cuando mi hermano se accidento y yo le estaba pagando el arreglo con felipe, entre los 2 le mandamos arreglar la moto mientras el estaba en el hospital", i: 50, type: "img" },
+      { t: "Cuando te quite el zapato en el portal y te lo deje abajo en donde tiran la basura jaja ", i: 51, type: "img" },
+      { t: "Diego unos minutos despues de que se accidento", i: 52, type: "img" },
+      { t: "El casco que llevaba diego", i: 53, type: "img" },
+      { t: "El mas feliz con su termo de snoopy", i: 54, type: "img" },
+      { t: "Este es el video del sticker jajja ", i: 55, type: "video" },
+      { t: "Este es un video que surgio mientras recopilaba lo que necesitaba para la carta", i: 56, type: "video" },
+      { t: "Fotos con tu prima a la que le caigo mal,  no se si aun sea asi ", i: 57, type: "img" },
+      { t: "La maleta que diego llevaba ", i: 58, type: "img" },
+      { t: "Las pantuflas de mi mamà  jaaja ", i: 59, type: "img" },
+      { t: "Lo que algun dia prometimos hacernos", i: 60, type: "img" },
+      { t: "Lo que te envie con juanjo ", i: 61, type: "img" },
+      { t: "Una foto mas en el cumple de paula", i: 62, type: "img" },
+      { t: "Ya me estaba calmando 01 55 am ", i: 63, type: "video" }
+    ];
+
+    let currentSlide = 0;
+    const player = document.getElementById('audio-player');
+
+    // Lógica Audio
+    function playAudioSafe() {
+      player.volume = 0.5;
+      player.play().then(() => {
+        console.log("Audio playing");
+      }).catch(error => {
+        console.log("Audio autoplay failed, waiting for interaction", error);
+      });
+    }
+
+    // Navegación
+    function iniciarSlideshow() {
+      currentSlide = 0;
+      mostrarSlide(currentSlide);
+      document.getElementById('modal').style.display = 'flex';
+      gsap.to('#modal', { opacity: 1, duration: 0.5 });
+      playAudioSafe(); // Intentar play de nuevo por si acaso
+    }
+
+    function cambiarSlide(direccion) {
+      currentSlide += direccion;
+      if (currentSlide < 0) currentSlide = galeriaData.length - 1;
+      if (currentSlide >= galeriaData.length) currentSlide = 0;
+      mostrarSlide(currentSlide);
+    }
+
+    function mostrarSlide(index) {
+      const item = galeriaData[index];
+      const contenedor = document.getElementById('modal-contenido');
+      const texto = document.getElementById('modal-texto');
+      document.getElementById('numero-foto').innerText = `${index + 1} / ${galeriaData.length}`;
+
+      // Animación salida
+      gsap.to(contenedor, {
+        opacity: 0, duration: 0.2, onComplete: () => {
+          // Construir src
+          let src = `img/recuerdo_${item.i}`;
+          src += (item.type === 'video') ? '.mp4' : '.jpeg';
+
+          if (item.type === 'video') {
+            contenedor.innerHTML = `<video src="${src}" controls autoplay playsinline style="width:100%"></video>`;
+            // Bajar música fondo
+            player.volume = 0.2;
+          } else {
+            contenedor.innerHTML = `<img src="${src}" onerror="this.src='./img/recuerdo_${item.i}.jpg'">`; // Fallback a jpg
+            player.volume = 0.5;
+          }
+
+          texto.innerText = item.t;
+
+          // Animación entrada
+          gsap.to(contenedor, { opacity: 1, duration: 0.3 });
+        }
+      });
+    }
+
+    function cerrarModal() {
+      gsap.to('#modal', {
+        opacity: 0, duration: 0.3, onComplete: () => {
+          document.getElementById('modal').style.display = 'none';
+          document.getElementById('modal-contenido').innerHTML = ''; // Parar videos
+          player.volume = 0.5;
+        }
+      });
+    }
+
+    // Teclado
+    document.addEventListener('keydown', (e) => {
+      if (document.getElementById('modal').style.display === 'flex') {
+        if (e.key === 'ArrowRight') cambiarSlide(1);
+        if (e.key === 'ArrowLeft') cambiarSlide(-1);
+        if (e.key === 'Escape') cerrarModal();
+      }
+    });
+
+    // Apertura Carta
+    window.abrirCarta = function () {
+      // INTENTO DE AUDIO INMEDIATO
+      playAudioSafe();
+
+      document.getElementById('solapa-top').classList.add('abierta');
+      setTimeout(() => document.getElementById('carta-interior').classList.add('sacada'), 400);
+      setTimeout(() => {
+        gsap.to('#pantalla-inicio', {
+          opacity: 0,
+          duration: 1,
+          onComplete: () => {
+            document.getElementById('pantalla-inicio').style.display = 'none';
+            document.getElementById('contenido-principal').classList.remove('oculto');
+            document.getElementById('control-musica').classList.remove('oculto');
+
+            gsap.from(".gsap-header", { y: 50, opacity: 0, stagger: 0.2, duration: 1 });
+            gsap.from(".intro", { scale: 0.9, opacity: 0, duration: 1, delay: 0.5 });
+            gsap.from(".slideshow-hero", { y: 30, opacity: 0, duration: 1, delay: 0.8 });
+          }
+        });
+      }, 1200);
+    }
+  </script>
+</body>
+
+</html>
