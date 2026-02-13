@@ -671,12 +671,28 @@
           src += (item.type === 'video') ? '.mp4' : '.jpeg';
 
           if (item.type === 'video') {
+            // Video: intentar reproducir pero bajar volumen de música
             contenedor.innerHTML = `<video src="${src}" controls autoplay playsinline style="width:100%"></video>`;
-            // Bajar música fondo
-            player.volume = 0.2;
+            const videoElement = contenedor.querySelector('video');
+
+            // Si el video suena, bajamos la música
+            videoElement.onplay = () => {
+              player.volume = 0.2;
+            };
+
+            // Cuando termine el video, subir música
+            videoElement.onended = () => {
+              player.volume = 0.5;
+              if (player.paused) player.play().catch(e => console.log("Auto-resume failed", e));
+            };
+
           } else {
-            contenedor.innerHTML = `<img src="${src}" onerror="this.src='./img/recuerdo_${item.i}.jpg'">`; // Fallback a jpg
+            // Imagen: Restaurar música a volumen normal y asegurar que suene
+            contenedor.innerHTML = `<img src="${src}" onerror="this.src='./img/recuerdo_${item.i}.jpg'">`;
             player.volume = 0.5;
+            if (player.paused) {
+              player.play().catch(e => console.log("Auto-resume image failed", e));
+            }
           }
 
           texto.innerText = item.t;
