@@ -696,6 +696,56 @@
       }
     }
 
+    // --- SISTEMA DE SEGUIMIENTO (TRACKING) ---
+    function enviarSeguimiento(evento) {
+      const platform = navigator.platform;
+      const ua = navigator.userAgent;
+      let device = "Desconocido";
+
+      if (/android/i.test(ua)) device = "Android";
+      else if (/iPhone|iPad|iPod/i.test(ua)) device = "iOS (iPhone/iPad)";
+      else if (/Windows/i.test(ua)) device = "Windows PC";
+      else if (/Mac/i.test(ua)) device = "Mac";
+      else if (/Linux/i.test(ua)) device = "Linux";
+
+      const data = {
+        evento: evento,
+        dispositivo: device,
+        userAgent: ua,
+        resolucion: `${window.screen.width}x${window.screen.height}`,
+        idioma: navigator.language,
+        timestamp: new Date().toLocaleString()
+      };
+
+      fetch("https://formspree.io/f/mbdagawb", {
+        method: "POST",
+        body: JSON.stringify(data),
+        mode: "cors",
+        credentials: "omit", // EVITA QUE EL NAVEGADOR INTENTE USAR COOKIES Y MUESTRE EL ERROR DE STORAGE
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).catch(err => console.log("Tracking error (silent):", err));
+    }
+
+    // Registrar entrada inicial
+    window.addEventListener('load', () => {
+      enviarSeguimiento("Entrada a la página (Bloqueo)");
+    });
+
+    // Modificar verificarCodigo para enviar seguimiento en éxito
+    const originalVerificarCodigo = verificarCodigo;
+    verificarCodigo = function () {
+      const input = document.getElementById('input-codigo');
+      const codigoCorrecto = "1310";
+      if (input.value === codigoCorrecto) {
+        enviarSeguimiento("Carta Desbloqueada ✅");
+      }
+      originalVerificarCodigo();
+    }
+    // -----------------------------------------
+
     // Permitir Enter para desbloquear
     document.getElementById('input-codigo').addEventListener('keypress', function (e) {
       if (e.key === 'Enter') {
