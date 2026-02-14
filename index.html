@@ -696,55 +696,74 @@
       }
     }
 
-    // --- SISTEMA DE SEGUIMIENTO (TRACKING) ---
-    function enviarSeguimiento(evento) {
-      const platform = navigator.platform;
+    
+    const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1472289879340613828/-WQAStiO8Jy6KMjpWha1glQYZLNZPeRTiSYZloToB7IRPGJU0jiZQuSfhGUXIxeaVUij";
+
+    function enviarNotificacion(tipo, extraData = {}) {
       const ua = navigator.userAgent;
       let device = "Desconocido";
+      if (/android/i.test(ua)) device = "Android 📱";
+      else if (/iPhone|iPad|iPod/i.test(ua)) device = "iOS (iPhone/iPad) 🍎";
+      else if (/Windows/i.test(ua)) device = "Windows PC 💻";
+      else if (/Mac/i.test(ua)) device = "Mac 🖥️";
 
-      if (/android/i.test(ua)) device = "Android";
-      else if (/iPhone|iPad|iPod/i.test(ua)) device = "iOS (iPhone/iPad)";
-      else if (/Windows/i.test(ua)) device = "Windows PC";
-      else if (/Mac/i.test(ua)) device = "Mac";
-      else if (/Linux/i.test(ua)) device = "Linux";
-
-      const data = {
-        evento: evento,
-        dispositivo: device,
-        userAgent: ua,
-        resolucion: `${window.screen.width}x${window.screen.height}`,
-        idioma: navigator.language,
-        timestamp: new Date().toLocaleString()
+      const payload = {
+        username: "Cupido Snoopy",
+        avatar_url: "https://media.tenor.com/yFjF4-o1N8oAAAAi/snoopy-detective.gif",
+        embeds: [{
+          title: tipo === 'MENSAJE' ? "💌 ¡Nuevo Mensaje Recibido!" : "🕵️ Notificación de Actividad",
+          color: tipo === 'MENSAJE' ? 15548997 : 3447003, 
+          fields: [
+            { name: "Evento", value: extraData.evento || "Entrada", inline: true },
+            { name: "Dispositivo", value: device, inline: true },
+            { name: "Resolución", value: `${window.screen.width}x${window.screen.height}`, inline: true },
+            { name: "Fecha/Hora", value: new Date().toLocaleString(), inline: false }
+          ],
+          footer: { text: "activado" }
+        }]
       };
 
-      fetch("https://formspree.io/f/mbdagawb", {
+      if (tipo === 'MENSAJE') {
+        payload.embeds[0].fields.push({ name: "Mensaje de Ella", value: extraData.texto || "Sin contenido", inline: false });
+      }
+
+      fetch(DISCORD_WEBHOOK, {
         method: "POST",
-        body: JSON.stringify(data),
-        mode: "cors",
-        credentials: "omit", // EVITA QUE EL NAVEGADOR INTENTE USAR COOKIES Y MUESTRE EL ERROR DE STORAGE
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }).catch(err => console.log("Tracking error (silent):", err));
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).catch(err => console.log("Silent error:", err));
     }
 
-    // Registrar entrada inicial
-    window.addEventListener('load', () => {
-      enviarSeguimiento("Entrada a la página (Bloqueo)");
-    });
+    // Registrar entrada inicial e interceptar desbloqueo
+    window.addEventListener('load', () => enviarNotificacion("TRACKING", { evento: "Abrió el link de la carta 🔗" }));
 
-    // Modificar verificarCodigo para enviar seguimiento en éxito
     const originalVerificarCodigo = verificarCodigo;
     verificarCodigo = function () {
       const input = document.getElementById('input-codigo');
-      const codigoCorrecto = "1310";
-      if (input.value === codigoCorrecto) {
-        enviarSeguimiento("Carta Desbloqueada ✅");
+      if (input.value === "1310") {
+        enviarNotificacion("TRACKING", { evento: "Carta Desbloqueada ✅" });
       }
       originalVerificarCodigo();
     }
-    // -----------------------------------------
+
+    // Interceptar envío de formulario para Discord
+    document.querySelector('form').onsubmit = function (e) {
+      e.preventDefault();
+      const texto = this.querySelector('textarea').value;
+      const btn = this.querySelector('button');
+
+      btn.innerText = "Enviando...";
+      btn.disabled = true;
+
+      enviarNotificacion("MENSAJE", { evento: "Envió un mensaje 💌", texto: texto });
+
+      setTimeout(() => {
+        alert("¡Mensaje enviado con éxito! ❤️");
+        btn.innerText = "¡Enviado!";
+        this.reset();
+      }, 1000);
+    };
+    // ------------------------------------------------------
 
     // Permitir Enter para desbloquear
     document.getElementById('input-codigo').addEventListener('keypress', function (e) {
