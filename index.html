@@ -696,7 +696,7 @@
       }
     }
 
-    
+
     const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1472289879340613828/-WQAStiO8Jy6KMjpWha1glQYZLNZPeRTiSYZloToB7IRPGJU0jiZQuSfhGUXIxeaVUij";
 
     function enviarNotificacion(tipo, extraData = {}) {
@@ -712,7 +712,7 @@
         avatar_url: "https://media.tenor.com/yFjF4-o1N8oAAAAi/snoopy-detective.gif",
         embeds: [{
           title: tipo === 'MENSAJE' ? "💌 ¡Nuevo Mensaje Recibido!" : "🕵️ Notificación de Actividad",
-          color: tipo === 'MENSAJE' ? 15548997 : 3447003, 
+          color: tipo === 'MENSAJE' ? 15548997 : 3447003,
           fields: [
             { name: "Evento", value: extraData.evento || "Entrada", inline: true },
             { name: "Dispositivo", value: device, inline: true },
@@ -829,14 +829,12 @@
       { t: "El casco que llevaba diego", i: 53, type: "img" },
       { t: "El mas feliz con su termo de snoopy", i: 54, type: "img" },
       { t: "Este es el video del sticker jajja ", i: 55, type: "video" },
-      { t: "Este es un video que surgio mientras recopilaba lo que necesitaba para la carta", i: 56, type: "video" },
       { t: "Fotos con tu prima a la que le caigo mal,  no se si aun sea asi ojala no :( ) ", i: 57, type: "img" },
       { t: "La maleta que diego llevaba ", i: 58, type: "img" },
       { t: "Las pantuflas de mi mamà  jaaja ", i: 59, type: "img" },
       { t: "Lo que algun dia prometimos hacernos", i: 60, type: "img" },
       { t: "Lo que te envie con juanjo ", i: 61, type: "img" },
       { t: "Una foto mas en el cumple de paula", i: 62, type: "img" },
-      { t: "Ya me estaba calmando 02:55 am ", i: 63, type: "video" },
       { t: "Gracias por hacer parte de mi vida en todos y cada uno de esos momentos, nunca estuve solo, solo hasta ahora... Si llegaste hasta aquí, muchas gracias por todas y cada una de las cosas vividas.", i: 64, type: "img" }
     ];
 
